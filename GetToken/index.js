@@ -1,16 +1,4 @@
-const OpenTok = require('opentok');
-const faunadb = require('faunadb'),
-    q = faunadb.query;
-
-require('dotenv').config();
-
-const client = new faunadb.Client({
-    secret: process.env.FAUNADB_SECRET
-});
-
-const opentok = new OpenTok(
-    process.env.OPENTOK_API_KEY,
-    process.env.OPENTOK_API_SECRET);
+const openTok = require("../_opentok");
 
 /**
  * Gets or creates a session based on the provided parameters
@@ -37,7 +25,7 @@ module.exports = async function (context, req) {
     const sessionId = req.query.sessionId || req.body.sessionId;
     const userName = req.query.userName || req.body.userName;
 
-    const token = createToken(sessionId, userName);
+    const token = openTok.createToken(sessionId, userName);
     context.res = {
         body: {
             sessionId,
@@ -45,16 +33,3 @@ module.exports = async function (context, req) {
         }
     }
 };
-
-/**
- * Creates an OpenTok token
- * @param sessionId Unqiue name of the session to join
- * @param userName Name to display for user
- */
-function createToken(sessionId, userName) {
-    return opentok.generateToken(sessionId, {
-        role: userName.toLowerCase() === 'michael jolley' ? 'moderator' : 'subscriber',
-        expireTime: (new Date().getTime() / 1000) + (7 * 24 * 60 * 60),
-        data: `name=${userName}`
-    });
-}

@@ -38,11 +38,23 @@ POST: `/api/GetToken`
 
 </details>
 
+---
+
+<details><summary>Session Monitor Callback</summary>
+
+### Get Token
+
+POST: `/api/SessionMonitorCallback`
+
+#### Parameters
+
+Body is defined in TokBox documentation at [https://tokbox.com/developer/guides/session-monitoring/](https://tokbox.com/developer/guides/session-monitoring/)
+
+</details>
+
 ## To Implement
 
 Below are capabilities that are planned:
 
-- [ ] Session Monitoring Callback to:
-    - [ ] Update # of connected users
 - [ ] Start Archive
 - [ ] Stop Archive
