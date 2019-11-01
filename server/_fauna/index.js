@@ -31,17 +31,38 @@ async function getRecordBySessionName(sessionName) {
 async function getRecordBySessionId(sessionId) {
   return new Promise((resolve, reject) => {
     client
-      .query(
-        q.Get(
-          q.Match(q.Index("sessionId_sessions"), sessionId)
-        )
-      )
+      .query(q.Get(q.Match(q.Index("sessionId_sessions"), sessionId)))
       .then(ret => resolve(ret))
       .catch(err => reject(err));
   });
 }
 
 module.exports = {
+  /**
+   * Gets all sessions
+   */
+  getSessions: async function getSessions() {
+    return new Promise((resolve, reject) => {
+      client
+        .query(
+          q.Map(
+            q.Paginate(
+              q.Match(
+                q.Index('all_sessions')
+              )
+            ),
+            q.Lambda(
+              "session",
+              q.Get(
+                q.Var('session')
+              )
+            )
+          )
+        )
+        .then(ret => resolve(ret.data.map(m => m.data)))
+        .catch(err => resolve([]));
+    });
+  },
 
   /**
    * Gets a session (if it exists) from faunaDB
@@ -93,10 +114,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       client
         .query(
-          q.Replace(
-            q.Ref(
-              q.Collection("sessions"),
-              sessionRecord.ref.id), {
+          q.Replace(q.Ref(q.Collection("sessions"), sessionRecord.ref.id), {
             data: sessionRecord.data
           })
         )
@@ -104,5 +122,4 @@ module.exports = {
         .catch(err => reject(err));
     });
   }
-
-}
+};

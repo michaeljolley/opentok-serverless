@@ -8,7 +8,7 @@ const openTok = require("../_opentok");
  * @param archiveMode Archive settings for the session. Defaults to 'manual'
  * @param location Optional location hint
  */
-module.exports = async function (context, req) {
+module.exports = async function(context, req) {
   context.log("GetSession trigger processed a request.");
 
   if (req.query.sessionName || (req.body && req.body.sessionName)) {
@@ -20,6 +20,9 @@ module.exports = async function (context, req) {
     if (session) {
       console.log(`session: ${session.sessionId}`);
       context.res = {
+        headers: {
+          "Access-Control-Allow-Origin": "*"
+        },
         body: session
       };
     } else {
@@ -45,11 +48,17 @@ module.exports = async function (context, req) {
         console.log(`session: ${sessionId}`);
         session = await faunaDB.createSession(sessionId, sessionName);
         context.res = {
+          headers: {
+            "Access-Control-Allow-Origin": "*"
+          },
           body: session
         };
       } else {
         context.res = {
           status: 400,
+          headers: {
+            "Access-Control-Allow-Origin": "*"
+          },
           body: "Unable to create or retrieve session."
         };
       }
@@ -57,6 +66,9 @@ module.exports = async function (context, req) {
   } else {
     context.res = {
       status: 400,
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      },
       body:
         "Please pass a sessionName on the query string or in the request body"
     };
