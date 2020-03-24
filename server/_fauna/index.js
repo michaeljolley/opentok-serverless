@@ -4,7 +4,7 @@ const faunadb = require("faunadb"),
 require("dotenv").config();
 
 const client = new faunadb.Client({
-  secret: process.env.FAUNADB_SECRET
+  secret: process.env.FAUNADBSECRET
 });
 
 /**
@@ -46,17 +46,8 @@ module.exports = {
       client
         .query(
           q.Map(
-            q.Paginate(
-              q.Match(
-                q.Index('all_sessions')
-              )
-            ),
-            q.Lambda(
-              "session",
-              q.Get(
-                q.Var('session')
-              )
-            )
+            q.Paginate(q.Match(q.Index("all_sessions"))),
+            q.Lambda("session", q.Get(q.Var("session")))
           )
         )
         .then(ret => resolve(ret.data.map(m => m.data)))

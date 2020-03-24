@@ -3,12 +3,11 @@ require("dotenv").config();
 const OpenTok = require("opentok");
 
 const opentok = new OpenTok(
-  process.env.OPENTOK_API_KEY,
-  process.env.OPENTOK_API_SECRET
+  process.env.OPENTOKAPIKEY,
+  process.env.OPENTOKAPISECRET
 );
 
 module.exports = {
-
   /**
    * Creates an OpenTok session
    * @param archiveMode Archive settings for the session. Defaults to 'none'
@@ -27,7 +26,7 @@ module.exports = {
         {
           mediaMode
         },
-        function (err, session) {
+        function(err, session) {
           if (err) reject(err);
           console.log(session.sessionId);
           resolve(session.sessionId);
@@ -43,9 +42,12 @@ module.exports = {
    */
   createToken: function createToken(sessionId, userName) {
     return opentok.generateToken(sessionId, {
-      role: userName.toLowerCase() === 'michael jolley' ? 'moderator' : 'subscriber',
-      expireTime: (new Date().getTime() / 1000) + (7 * 24 * 60 * 60),
+      role:
+        userName.toLowerCase() === "michael jolley"
+          ? "moderator"
+          : "subscriber",
+      expireTime: new Date().getTime() / 1000 + 7 * 24 * 60 * 60,
       data: `name=${userName}`
     });
   }
-}
+};
