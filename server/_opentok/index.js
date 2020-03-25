@@ -42,10 +42,7 @@ module.exports = {
    */
   createToken: function createToken(sessionId, userName) {
     return opentok.generateToken(sessionId, {
-      role:
-        userName.toLowerCase() === "michael jolley"
-          ? "moderator"
-          : "subscriber",
+      role: "publisher",
       expireTime: new Date().getTime() / 1000 + 7 * 24 * 60 * 60,
       data: `name=${userName}`
     });
