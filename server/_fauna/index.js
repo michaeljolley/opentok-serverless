@@ -56,6 +56,23 @@ module.exports = {
   },
 
   /**
+   * Gets all clues by topic
+   */
+  getClues: async function getClues(topic) {
+    return new Promise((resolve, reject) => {
+      client
+        .query(
+          q.Map(
+            q.Paginate(q.Match(q.Index("clues_by_topic"))),
+            q.Lambda("topic", q.Get(q.Var("topic")))
+          )
+        )
+        .then(ret => resolve(ret.data.map(m => m.data)))
+        .catch(err => resolve([]));
+    });
+  },
+
+  /**
    * Gets a session (if it exists) from faunaDB
    * @param {string} sessionName user friendly name representing the session
    */
